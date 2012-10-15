@@ -56,6 +56,16 @@ describe CopycopterClient::Cache do
     cache['test.key'].should == 'test value'
   end
 
+  it "only uploads in non-public environments" do
+    cache = build_cache
+    client.public = true
+    cache.stubs(:flush)
+
+    cache.sync
+
+    cache.should have_received(:flush).never
+  end
+
   it "handles connection errors when flushing" do
     failure = "server is napping"
     logger = FakeLogger.new

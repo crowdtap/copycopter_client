@@ -4,10 +4,11 @@ class FakeClient
     @uploaded = {}
     @uploads = 0
     @downloads = 0
+    @public = false
   end
 
   attr_reader :uploaded, :uploads, :downloads
-  attr_accessor :delay, :error
+  attr_accessor :delay, :error, :public
 
   def []=(key, value)
     @data[key] = value
@@ -34,6 +35,10 @@ class FakeClient
 
   def downloaded?
     @downloads > 0
+  end
+
+  def public?
+    @public
   end
 
   private

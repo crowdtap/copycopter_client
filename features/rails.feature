@@ -128,9 +128,7 @@ Feature: Using copycopter in a rails app
     Then the response should contain "This is a test"
     And the response should contain "Unpublished"
     And I wait for changes to be synchronized
-    And the "abc123" project should have the following blurbs:
-      | key                         | draft content |
-      | en.users.index.unknown-test | Unknown       |
+    And the "abc123" project should not have the "en.users.index.unknown-test" blurb
 
   Scenario: configure a bad api key
     When I configure the copycopter client with api key "bogus"
@@ -227,7 +225,6 @@ Feature: Using copycopter in a rails app
     <%= @user.errors.full_messages.first %>
     """
     When I successfully rake "db:migrate"
-    And I configure the copycopter client to use published data
     And I start the application
     And I visit /users/
     Then the response should contain "Name can't be blank"

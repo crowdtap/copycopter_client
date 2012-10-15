@@ -111,7 +111,7 @@ module CopycopterClient
     # Downloads and then flushes
     def sync
       download
-      flush
+      flush unless @client.public?
     end
 
     private

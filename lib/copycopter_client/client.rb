@@ -80,14 +80,15 @@ module CopycopterClient
       end
     end
 
+    def public?
+      @public
+    end
+
     private
 
     attr_reader :host, :port, :api_key, :http_read_timeout,
       :http_open_timeout, :secure, :logger, :ca_file
 
-    def public?
-      @public
-    end
 
     def uri(resource)
       "/api/v2/projects/#{api_key}/#{resource}"
