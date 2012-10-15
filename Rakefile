@@ -1,16 +1,20 @@
-require 'rubygems'
-require 'bundler/setup'
+require 'bundler/gem_tasks'
 require 'appraisal'
-require 'rake'
-require 'rake/testtask'
-require 'rubygems/package_task'
 require 'cucumber/rake/task'
 require 'rspec/core/rake_task'
 require 'yard'
 
 desc 'Default: run the specs and features.'
-task :default => :spec do
-  system("rake -s appraisal cucumber;")
+task :default => :all
+
+desc 'Test the copycopter_client gem under all supported Rails versions.'
+task :all do |t|
+  if ENV['BUNDLE_GEMFILE']
+    exec('rake spec cucumber')
+  else
+    Rake::Task["appraisal:install"].execute
+    exec('rake appraisal spec cucumber')
+  end
 end
 
 desc 'Test the copycopter_client plugin.'
@@ -21,29 +25,12 @@ end
 
 desc "Run cucumber features"
 Cucumber::Rake::Task.new do |t|
-  t.cucumber_opts = ['--tags', '~@wip',
-                     '--format', (ENV['CUCUMBER_FORMAT'] || 'progress')]
+  t.cucumber_opts = [
+    '--tags', '~@wip',
+    '--format', (ENV['CUCUMBER_FORMAT'] || 'progress')
+  ]
 end
 
 YARD::Rake::YardocTask.new do |t|
   t.files   = ['lib/**/*.rb']
 end
-
-eval("$specification = begin; #{IO.read('copycopter_client.gemspec')}; end")
-Gem::PackageTask.new($specification) do |package|
-  package.need_zip = true
-  package.need_tar = true
-end
-
-gem_file = "pkg/#{$specification.name}-#{$specification.version}.gem"
-
-desc "Build and install the latest gem"
-task :install => :gem do
-  sh("gem install --local #{gem_file}")
-end
-
-desc "Build and release the latest gem"
-task :release => :gem do
-  sh("gem push #{gem_file}")
-end
-

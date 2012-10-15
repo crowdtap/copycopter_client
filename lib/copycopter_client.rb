@@ -24,6 +24,12 @@ module CopycopterClient
     client.deploy
   end
 
+  # Issues a new export, returning yaml representation of blurb cache.
+  # This is called when the copycopter:export rake task is invoked.
+  def self.export
+    cache.export
+  end
+
   # Starts the polling process.
   def self.start_poller
     poller.start
@@ -47,7 +53,8 @@ module CopycopterClient
   # @example
   #   CopycopterClient.configure do |config|
   #     config.api_key = '1234567890abcdef'
-  #     config.secure  = false
+  #     config.host = 'your-copycopter-server.herokuapp.com'
+  #     config.secure = true
   #   end
   #
   # @param apply [Boolean] (internal) whether the configuration should be applied yet.
@@ -55,12 +62,15 @@ module CopycopterClient
   # @yield [Configuration] the configuration to be modified
   def self.configure(apply = true)
     self.configuration ||= Configuration.new
-    yield(configuration)
-    configuration.apply if apply
+    yield configuration
+
+    if apply
+      configuration.apply
+    end
   end
 end
 
-if defined?(Rails)
+if defined? Rails
   require 'copycopter_client/rails'
 end
 

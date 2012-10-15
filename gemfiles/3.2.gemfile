@@ -2,6 +2,10 @@
 
 source "http://rubygems.org"
 
-gem "rails", "3.0.3"
+gem "rails", "3.2.3"
+gem "jquery-rails"
+gem "uglifier"
+gem "sass-rails"
+gem "coffee-rails"
 
 gemspec :path=>"../"
