@@ -59,11 +59,11 @@ describe CopycopterClient::Cache do
   it "only uploads in non-public environments" do
     cache = build_cache
     client.public = true
-    cache.stubs(:flush)
+    client.stubs(:upload)
 
     cache.sync
 
-    cache.should have_received(:flush).never
+    client.should have_received(:upload).never
   end
 
   it "handles connection errors when flushing" do

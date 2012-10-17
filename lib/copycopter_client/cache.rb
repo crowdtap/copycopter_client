@@ -88,8 +88,10 @@ module CopycopterClient
     end
 
     def flush
-      with_queued_changes do |queued|
-        client.upload queued
+      unless @client.public?
+        with_queued_changes do |queued|
+          client.upload queued
+        end
       end
     rescue ConnectionError => error
       logger.error error.message
@@ -111,7 +113,7 @@ module CopycopterClient
     # Downloads and then flushes
     def sync
       download
-      flush unless @client.public?
+      flush
     end
 
     private
